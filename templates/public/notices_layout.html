@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="{{ $language }}">
+<head>
+	<meta charset="{{ $charset }}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light dark">
+	<meta name="robots" content="noindex">
+	<title>{% yield meta_title %} | {{ $app_name }}</title>
+	<style>
+		:root { --text: #1d2129; --muted: #5b6270; --line: #e3e6eb; --accent: #1b78cb; --ok: #1e7f4f; --warn: #9a6400; --error: #b42318; }
+		@media (prefers-color-scheme: dark) {
+			:root { --text: #e6eaf0; --muted: #9aa4b2; --line: #2a3242; --accent: #4da3ff; --ok: #4cc38a; --warn: #f5b84d; --error: #f97066; }
+		}
+		body { margin: 0 auto; max-width: 52rem; padding: 1.5rem 1rem 3rem; font: 1rem/1.6 system-ui, sans-serif; color: var(--text); }
+		a { color: var(--accent); }
+		.demoprov-muted { color: var(--muted); }
+		.demoprov-notice, .demoprov-flash { margin: 0 0 .5rem; padding: .5rem .75rem; border-left: 4px solid var(--accent); }
+		.demoprov-notice-warning, .demoprov-flash-warning { border-color: var(--warn); }
+		.demoprov-flash-success { border-color: var(--ok); }
+		.demoprov-flash-error { border-color: var(--error); }
+		.demoprov-table { width: 100%; border-collapse: collapse; }
+		.demoprov-table th, .demoprov-table td { padding: .5rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+		.demoprov-form label { display: block; margin-top: 1rem; font-weight: 600; }
+		.demoprov-form input, .demoprov-form select, .demoprov-form textarea { box-sizing: border-box; width: 100%; padding: .5rem; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); }
+		.demoprov-form textarea { min-height: 6rem; }
+		.demoprov-form button { margin-top: 1rem; padding: .5rem 1rem; font: inherit; }
+		.demoprov-field-error { display: block; color: var(--error); }
+	</style>
+</head>
+<body>
+	{% include "partials/notices.html@citomni/demo-provider" %}
+	<main>
+		{% yield content %}
+	</main>
+</body>
+</html>

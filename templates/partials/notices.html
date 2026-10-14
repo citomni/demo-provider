@@ -1,0 +1,16 @@
+{#
+	The current site notices, for the host app's layout:
+
+		{% include "partials/notices.html@citomni/demo-provider" %}
+
+	$site_notices comes from the view.vars entry in the provider's Registry, so the
+	partial shows nothing on a path that the entry does not include. Style the classes
+	demoprov-notices, demoprov-notice and demoprov-notice-<level> in the host app.
+#}
+{% if (!empty($site_notices)) %}
+	<section class="demoprov-notices" aria-label="{{ $txt('notices_label', 'notices', 'citomni/demo-provider', 'Site notices') }}">
+		{% foreach ($site_notices as $notice) %}
+			<p class="demoprov-notice demoprov-notice-{{ $notice['level'] }}">{{ $notice['text'] }}</p>
+		{% endforeach %}
+	</section>
+{% endif %}

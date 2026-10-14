@@ -1,0 +1,75 @@
+{
+    "name": "citomni/demo-provider",
+    "description": "Reference provider package for the CitOmni PHP framework: site notices with a Registry, a service, routes, templates, translations, CLI commands and an Operation. Shows each layer the canonical way, with a README per folder.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "citomni",
+        "php",
+        "php85",
+        "php-framework",
+        "demo",
+        "example",
+        "provider",
+        "provider-package",
+        "composer-package",
+        "modular-architecture",
+        "reference-implementation",
+        "best-practices",
+        "coding-conventions",
+        "ai-guidelines",
+        "documentation"
+    ],
+    "homepage": "https://github.com/citomni/demo-provider",
+    "support": {
+        "email": "support@citomni.com",
+        "issues": "https://github.com/citomni/demo-provider/issues",
+        "source": "https://github.com/citomni/demo-provider",
+        "docs": "https://github.com/citomni/demo-provider/blob/main/README.md",
+        "security": "https://github.com/citomni/.github/blob/main/SECURITY.md"
+    },
+    "require": {
+        "php": "^8.5",
+        "ext-mbstring": "*",
+        "citomni/infrastructure": "^1.0.1.2"
+    },
+    "suggest": {
+        "citomni/cli": "Runs the notice:schedule, notice:expire and notice:list commands.",
+        "citomni/http": "Serves /notices.json, the management pages and the $site_notices template variable."
+    },
+    "conflict": {
+        "citomni/cli": "<1.0.0.9",
+        "citomni/http": "<1.0.5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "CitOmni\\DemoProvider\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CitOmni\\DemoProvider\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "@php tests/run.php"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lars Grove Mortensen",
+            "email": "lars@grove-mortensen.dk",
+            "homepage": "https://www.citomni.com",
+            "role": "Developer"
+        }
+    ]
+}

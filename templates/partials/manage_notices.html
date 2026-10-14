@@ -1,0 +1,105 @@
+{#
+	The management content: flash messages, current and upcoming notices, and the
+	scheduling form. Included by public/manage_notices.html, and by a host app page
+	that replaces it in the host's own layout.
+
+	Variables from NoticeManagementController::page(): $notices, $levels,
+	$text_max_length and $flash.
+
+	Classes for the host app's stylesheet: demoprov-muted, demoprov-flash and
+	demoprov-flash-<type> (success, warning, error), demoprov-table, demoprov-form
+	and demoprov-field-error.
+#}
+<h1>{{ $txt('manage_title', 'notices', 'citomni/demo-provider', 'Site notices') }}</h1>
+<p class="demoprov-muted">{{ $txt('manage_intro', 'notices', 'citomni/demo-provider', 'A notice shows at the top of the pages from its start until its end, newest start first.') }}</p>
+
+{% foreach ($flash['msg'] as $type => $messages) %}
+	{% foreach ((array)$messages as $message) %}
+		<p class="demoprov-flash demoprov-flash-{{ $type }}">{{ $message }}</p>
+	{% endforeach %}
+{% endforeach %}
+
+<h2>{{ $txt('list_title', 'notices', 'citomni/demo-provider', 'Current and upcoming') }}</h2>
+
+{% if ($notices === []) %}
+	<p class="demoprov-muted">{{ $txt('list_empty', 'notices', 'citomni/demo-provider', 'There are no current or upcoming notices.') }}</p>
+{% else %}
+	<table class="demoprov-table">
+		<thead>
+			<tr>
+				<th>{{ $txt('col_text', 'notices', 'citomni/demo-provider', 'Text') }}</th>
+				<th>{{ $txt('col_level', 'notices', 'citomni/demo-provider', 'Level') }}</th>
+				<th>{{ $txt('col_starts', 'notices', 'citomni/demo-provider', 'Starts') }}</th>
+				<th>{{ $txt('col_ends', 'notices', 'citomni/demo-provider', 'Ends') }}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% foreach ($notices as $notice) %}
+				<tr>
+					<td>{{ $notice['text'] }}</td>
+					<td>{{ $txt('level_' . $notice['level'], 'notices', 'citomni/demo-provider', $notice['level']) }}</td>
+					<td>
+						<time datetime="{{ $notice['starts_at'] }}">{{ $dt($notice['starts_at'], $txt('date_pattern', 'notices', 'citomni/demo-provider', 'd MMM y, HH:mm')) }}</time><br>
+						{% if ($notice['current']) %}
+							<span class="demoprov-muted">{{ $txt('status_current', 'notices', 'citomni/demo-provider', 'Current') }}</span>
+						{% else %}
+							<span class="demoprov-muted">{{ $txt('status_upcoming', 'notices', 'citomni/demo-provider', 'Upcoming') }}</span>
+						{% endif %}
+					</td>
+					<td>
+						{% if ($notice['ends_at'] === null) %}
+							{{ $txt('no_end', 'notices', 'citomni/demo-provider', 'Until ended') }}
+						{% else %}
+							<time datetime="{{ $notice['ends_at'] }}">{{ $dt($notice['ends_at'], $txt('date_pattern', 'notices', 'citomni/demo-provider', 'd MMM y, HH:mm')) }}</time>
+						{% endif %}
+					</td>
+					<td>
+						<form method="post" action="{{ $url('/notice/' . $notice['id'] . '/expire') }}">
+							{{{ $csrfField() }}}
+							<button type="submit">{{ $txt('expire', 'notices', 'citomni/demo-provider', 'End now') }}</button>
+						</form>
+					</td>
+				</tr>
+			{% endforeach %}
+		</tbody>
+	</table>
+{% endif %}
+
+<h2>{{ $txt('form_title', 'notices', 'citomni/demo-provider', 'Schedule a notice') }}</h2>
+
+<form class="demoprov-form" method="post" action="{{ $url('/notices/schedule') }}">
+	{{{ $csrfField() }}}
+
+	<label for="demoprov-text">{{ $txt('label_text', 'notices', 'citomni/demo-provider', 'Text') }}</label>
+	<textarea id="demoprov-text" name="text" maxlength="{{ $text_max_length }}" required>{{ $flash['old']['text'] ?? '' }}</textarea>
+	{% foreach ($flash['err']['text'] ?? [] as $error) %}
+		<span class="demoprov-field-error">{{ $error }}</span>
+	{% endforeach %}
+
+	<label for="demoprov-level">{{ $txt('label_level', 'notices', 'citomni/demo-provider', 'Level') }}</label>
+	<select id="demoprov-level" name="level">
+		{% foreach ($levels as $level) %}
+			<option value="{{ $level }}"{% if (($flash['old']['level'] ?? '') === $level) %} selected{% endif %}>{{ $txt('level_' . $level, 'notices', 'citomni/demo-provider', $level) }}</option>
+		{% endforeach %}
+	</select>
+	{% foreach ($flash['err']['level'] ?? [] as $error) %}
+		<span class="demoprov-field-error">{{ $error }}</span>
+	{% endforeach %}
+
+	<label for="demoprov-starts">{{ $txt('label_starts', 'notices', 'citomni/demo-provider', 'Starts') }}</label>
+	<input id="demoprov-starts" type="datetime-local" name="starts_at" value="{{ $flash['old']['starts_at'] ?? '' }}" aria-describedby="demoprov-starts-hint">
+	<span id="demoprov-starts-hint" class="demoprov-muted">{{ $txt('hint_starts', 'notices', 'citomni/demo-provider', 'Leave empty to start now.') }}</span>
+	{% foreach ($flash['err']['starts_at'] ?? [] as $error) %}
+		<span class="demoprov-field-error">{{ $error }}</span>
+	{% endforeach %}
+
+	<label for="demoprov-ends">{{ $txt('label_ends', 'notices', 'citomni/demo-provider', 'Ends') }}</label>
+	<input id="demoprov-ends" type="datetime-local" name="ends_at" value="{{ $flash['old']['ends_at'] ?? '' }}" aria-describedby="demoprov-ends-hint">
+	<span id="demoprov-ends-hint" class="demoprov-muted">{{ $txt('hint_ends', 'notices', 'citomni/demo-provider', 'Leave empty to show the notice until it is ended.') }}</span>
+	{% foreach ($flash['err']['ends_at'] ?? [] as $error) %}
+		<span class="demoprov-field-error">{{ $error }}</span>
+	{% endforeach %}
+
+	<button type="submit">{{ $txt('schedule', 'notices', 'citomni/demo-provider', 'Schedule') }}</button>
+</form>
