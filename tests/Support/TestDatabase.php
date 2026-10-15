@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace CitOmni\DemoProvider\Tests\Support;
 
 use CitOmni\DemoProvider\Tests\Support\Kernel\App;
+use CitOmni\Infrastructure\Boot\Registry;
 use CitOmni\Infrastructure\Service\Db;
 
 /**
@@ -133,6 +134,8 @@ class TestDatabase {
 	 *
 	 * Behavior:
 	 * - Registers the services db and secrets. secrets serves only db.password.
+	 * - Starts the db node from the citomni/infrastructure cfg baseline and puts the test
+	 *   server and the run's database on top, as an app's cfg overrides it.
 	 *
 	 * Notes:
 	 * - Loads the Db service from vendor/, so "composer install" must have run.
@@ -147,16 +150,23 @@ class TestDatabase {
 			throw new \RuntimeException('citomni/infrastructure was not found in vendor/. Run "composer install" in the package root first.');
 		}
 
+		// Reading Registry::CFG_COMMON evaluates every path in it, and a baseline may build
+		// paths from CITOMNI_APP_PATH, which an app's entry point defines. Nothing here
+		// writes below it.
+		if (!\defined('CITOMNI_APP_PATH')) {
+			\define('CITOMNI_APP_PATH', \sys_get_temp_dir());
+		}
+
 		$app = new App(['db' => [
 			'host'    => '127.0.0.1',
 			'user'    => 'root',
 			'name'    => $database,
 			'port'    => 3306,
 			'charset' => 'utf8mb4',
-		]] + $cfg);
+		] + Registry::CFG_COMMON['db']] + $cfg);
 
 		// Serves the secrets lookup from memory. Assumes that Db asks it for db.password,
-		// its default password secret.
+		// the password_secret of the db baseline.
 		$app->set('secrets', new class((string)\getenv('CITOMNI_TEST_PASSWORD')) {
 
 			/**

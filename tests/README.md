@@ -46,7 +46,7 @@ The last line of every suite, and of the runner, holds the totals: `N passed, M 
 
 - Connection: `root` on `127.0.0.1:3306` over TCP. The password comes only from `CITOMNI_TEST_PASSWORD`; unset means no password. Use a local development server; the suites create and drop databases.
 - Each run uses one database of its own. `\CitOmni\DemoProvider\Tests\Support\TestDatabase::create()` creates `citomni_demo_provider_<suite>_test_<random>`; the suite selects it, imports `sql/citomni_demo-provider.sql`, the current schema, and calls `TestDatabase::drop()` in `finally`, which drops only a database that `create()` named.
-- `TestDatabase::app()` returns an app double with the real Db service on that database. The password reaches it through an in-memory secrets double.
+- `TestDatabase::app()` returns an app double with the real Db service on that database. Its db node is the `db` node of `\CitOmni\Infrastructure\Boot\Registry::CFG_COMMON` with the test server's settings on top, as an app's config overrides it. The password reaches it through an in-memory secrets double.
 - Never put the password on a command line, in a file or in output. Worker processes inherit it through the environment.
 - A database suite needs `vendor/`, so run `composer install` first. When the server is down, the suite fails; nothing is skipped.
 
