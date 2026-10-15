@@ -49,7 +49,7 @@ A template sees three sources. The first one wins on a name conflict:
 2. Path-scoped values from `view.vars`, which the Registries of the packages and the app's cfg declare.
 3. Globals and helpers.
 
-Controller data shadows a global or helper with the same name, so never pass keys like `url`, `txt` or `charset`; escaped output uses `$charset`. The keys `ref`, `data`, `vars` and `file` never reach the template: `render()` uses those names itself, and `extract()` skips keys that already exist.
+Controller data shadows a global or helper with the same name, so never pass keys like `url`, `txt` or `charset`.
 
 Globals: `$app_name`, `$language`, `$charset`, `$base_url`, `$public_root_url`, `$env['name']`, `$env['dev']`, `$marketing_scripts`, and the flags `$csrf_protection`, `$captcha_protection`, `$honeypot_protection` and `$form_action_switching`.
 
