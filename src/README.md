@@ -158,9 +158,13 @@ Section dividers mark structure, not length: groups of members with different ro
 ## Cfg
 
 - `$this->app->cfg` is read-only. Associative arrays become nested Cfg nodes; lists stay plain arrays.
-- Reading an unknown key throws `\OutOfBoundsException`.
-- The Registry ships a baseline (`CFG_COMMON`, `CFG_HTTP`, `CFG_CLI`) for every cfg path the package reads, so the package reads its own keys directly: `$this->app->cfg->demo_provider->notices->max_visible`. A missing baseline is fixed in the Registry, not with a guard at the call site.
-- Cfg owned by another package may be absent; read it with `?? <default>`: `(string)($this->app->cfg->locale->timezone ?? 'UTC')`. `??` short-circuits through missing nodes at any depth. Use `isset()` only to branch on whether a node exists.
+- An empty array becomes an empty Cfg node, also for a key that normally holds a list. Read such a key as `$v instanceof Cfg ? $v->toArray() : $v`; never cast a Cfg node with `(array)`.
+- A direct read throws `\OutOfBoundsException` at the first missing key, at any depth.
+- `??` and `isset()` are both existence guards: every node on the path is checked, so neither throws on a missing key. `??` also falls back when the value is `null`; `isset()` is true for a key whose value is `null`.
+- The Registry ships a baseline (`CFG_COMMON`, `CFG_HTTP`, `CFG_CLI`) for every cfg path the package reads, so the package reads its own keys directly, with no `??`, `isset()`, `empty()` or `?->`: `$this->app->cfg->demo_provider->notices->max_visible`. A missing baseline is fixed in the Registry, not with a guard at the call site.
+- An option over own cfg is read as `$this->options['prefix'] ?? $this->app->cfg->service_name->prefix`. `??` does not guard its right operand; do not append another `?? <default>`.
+- Cfg owned by another package, and a path that exists in one mode only, may be absent; read it with `?? <default>`: `(string)($this->app->cfg->locale->timezone ?? 'UTC')`. Use `isset()` only to branch on whether a node exists.
+- A runtime-chosen key in the package's own map, such as a profile or storage name: read the map directly and only the lookup with `?? null`, followed by a specific exception when the key is missing.
 - Values the app may set wrongly are checked once, where they are read, and reported with an exception that names the cfg path; see `NoticeConfigException`.
 - Routes, commands, services and cfg are separate maps. Never put routes or commands in cfg.
 - In the Registry baselines, every key that holds a value gets a comment: what it controls, its unit when it has one, and the accepted values when the type does not make them obvious. An entry in another package's cfg structure, such as a template layer, a template variable or a job handler in `jobrunner.handlers`, gets one comment on what it provides. An override of another package's key does not repeat its meaning; a comment says why the package deviates when that is not evident.

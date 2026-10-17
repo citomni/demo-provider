@@ -40,7 +40,7 @@ class ScheduleNoticeCommand extends BaseCommand {
 	/**
 	 * Declare the command interface.
 	 *
-	 * @return array<string,array<string,mixed>>
+	 * @return array{arguments?: array<string,array<string,mixed>>, options?: array<string,array<string,mixed>>}
 	 * @see \CitOmni\Kernel\Command\BaseCommand::signature()  The signature format.
 	 */
 	protected function signature(): array {
