@@ -10,7 +10,8 @@ Database schema files of the package for MySQL and MariaDB. The package's Reposi
 ## Rules
 
 - InnoDB and `utf8mb4`, with `utf8mb4_unicode_ci` for text.
-- Machine values compare byte by byte. Hex hashes, tokens, UUIDs and status codes are `CHARACTER SET ascii COLLATE ascii_bin`, like `demoprov_notices.level` and `jobrun_jobs.worker_token_hash`. JSON is `longtext` with `utf8mb4_bin` and a `json_valid()` check, like `jobrun_jobs.payload_json`.
+- Machine values compare byte by byte. Hex hashes, tokens and UUIDs are `CHARACTER SET ascii COLLATE ascii_bin`, like `jobrun_jobs.worker_token_hash`. JSON is `longtext` with `utf8mb4_bin` and a `json_valid()` check, like `jobrun_jobs.payload_json`.
+- A status or other code is preferably text: `varchar` in `ascii_bin`, with a check constraint that lists the cases of a string-backed enum, like `demoprov_notices.level` and `NoticeLevel`. The stored value then means the same in SQL, dumps and logs as in code. A numeric code is allowed, as `tinyint unsigned` with a check constraint and an int-backed enum, for example for a flag that never gets a third state or to match an existing schema. Either way, a code is compared with named cases, never with a range such as `status > 0`.
 - snake_case names. Every table carries the package prefix, so it never collides with the app or another package; this package uses `demoprov_`.
 - `bigint unsigned` surrogate ids when a surrogate key fits; natural keys are allowed.
 - Name every index, unique key, foreign key and check constraint explicitly, with its kind and table first: `ix_demoprov_notices_window`, `chk_demoprov_notices_level`, `uq_jobrun_jobs_job_uuid`, `fk_auth_audit_identity`.
