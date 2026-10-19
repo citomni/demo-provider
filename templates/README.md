@@ -32,6 +32,7 @@ CitOmni has its own template language. Expressions are native PHP expressions: t
 | `{% extends "file@layer" %}` | Inherit a layout. |
 | `{% block name %}`, `{% endblock %}` | Content for the layout's `{% yield name %}`. |
 | `{% include "file@layer" %}` | Insert another template at compile time. It shares the variables of the including template, also across layers. |
+| `{% include expr %}` | Include the template whose `file@layer` reference `expr` yields when the directive runs, such as one partial per content block. It is compiled on its own and shares the variables of the including template, also across layers. An `expr` that starts with a string literal goes in parentheses. |
 | `{# ... #}` | Template comment, removed at compile time. |
 | `{?= expr ?}`, `{? code ?}` | Inline PHP, when `view.allow_php_tags` is on (the default). |
 
@@ -70,6 +71,7 @@ Globals: `$app_name`, `$language`, `$charset`, `$base_url`, `$public_root_url`, 
 
 - Templates present; they do not decide. Data, access checks and business rules come from the Controller. No queries and no domain side effects, like writes or mail. The form helpers `$csrfField()` and `$captchaField()` keep their state in the session; that is expected.
 - Escape by default. `{{{ }}}` only for markup that the app or a helper built, like `$csrfField()` and `$icon()`. Never for user content, and never for a text whose placeholders carry user content.
+- A runtime include takes its reference from code or cfg, never from request data or other untrusted input: the template it names runs as PHP.
 - Every visible text comes from `$txt()` with the package slug as layer and an English default: `$txt('schedule', 'notices', 'citomni/demo-provider', 'Schedule')`. Without the layer argument, `$txt()` reads the app's language files, not the package's.
 - Links through `$url()`, files in `public/` through `$asset()`. No hard-coded hosts or base paths.
 - Every POST form contains `{{{ $csrfField() }}}`, and its action verifies the token.
