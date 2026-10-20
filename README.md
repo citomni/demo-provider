@@ -106,6 +106,8 @@ Reading goes through the `notices` service. `view.vars` in the Registry calls `a
    mysql -u root -p citomni < vendor/citomni/demo-provider/sql/citomni_demo-provider.sql
    ```
 
+   A database that has the schema of an earlier release takes the newer files in `vendor/citomni/demo-provider/sql/migrations/` in name order instead.
+
 4. Show the notices in the app's layout, and style the classes `demoprov-notices`, `demoprov-notice` and `demoprov-notice-<level>`:
 
    ```html

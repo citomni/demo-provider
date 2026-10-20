@@ -261,11 +261,17 @@ try {
 		check($notices->listNotEnded(10) === [], 'The ended notice is still upcoming');
 	});
 
-	test('The schema refuses an unknown level and an end before the start', function () use ($admin): void {
+	test('The schema refuses a level that is not exactly info or warning, and an end before the start', function () use ($admin): void {
 		emptyTable($admin);
 
-		$e = throws(\mysqli_sql_exception::class, fn() => fixture($admin, 'Text', at('now'), null, 'urgent'));
-		check(\str_contains($e->getMessage(), 'chk_demoprov_notices_level'), 'Another error: ' . $e->getMessage());
+		// The collation of the column ignores trailing spaces in comparisons, so only a check that
+		// compares bytes refuses them.
+		foreach (['urgent', 'info ', 'warning  ', ' info', 'Info', "info\t", ''] as $level) {
+			$e = throws(\mysqli_sql_exception::class, fn() => fixture($admin, 'Text', at('now'), null, $level));
+			check(\str_contains($e->getMessage(), 'chk_demoprov_notices_level'), \json_encode($level) . ': another error: ' . $e->getMessage());
+		}
+
+		check(row($admin, fixture($admin, 'Text', at('now'), null, 'warning'))['level'] === 'warning', 'The exact value was not stored as given');
 
 		$e = throws(\mysqli_sql_exception::class, fn() => fixture($admin, 'Text', at('now'), at('-1 minute')));
 		check(\str_contains($e->getMessage(), 'chk_demoprov_notices_window'), 'Another error: ' . $e->getMessage());

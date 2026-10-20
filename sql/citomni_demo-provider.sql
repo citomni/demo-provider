@@ -32,7 +32,7 @@ CREATE TABLE `demoprov_notices` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `ix_demoprov_notices_window` (`ends_at`,`starts_at`),
-  CONSTRAINT `chk_demoprov_notices_level` CHECK (`level` in ('info','warning')),
+  CONSTRAINT `chk_demoprov_notices_level` CHECK (cast(`level` as char charset binary) in ('info','warning')),
   CONSTRAINT `chk_demoprov_notices_window` CHECK (`ends_at` is null or `ends_at` >= `starts_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

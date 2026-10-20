@@ -62,7 +62,7 @@ Fixtures are inserted on the admin connection, past the code under test. The sec
 | listNotEnded() returns current and upcoming notices by start, with the current flag | Filter, order, the `current` flag, limit |
 | expire() ends a current notice once | Guarded update; a second call and a missing id report false |
 | expire() of an upcoming notice moves its start to its end, so it never shows | An empty window at the current time; a second call reports false |
-| The schema refuses an unknown level and an end before the start | The two check constraints in `sql/citomni_demo-provider.sql`, by name |
+| The schema refuses a level that is not exactly info or warning, and an end before the start | The two check constraints in `sql/citomni_demo-provider.sql`, by name: an unknown level, trailing and leading spaces, another letter case, a tab and `''`; the exact value is stored |
 | The notices service returns at most max_visible current notices | The cfg limit, newest start first |
 | ScheduleNotice schedules a notice that SchedulingPolicy allows | `scheduled`, the stored row |
 | ScheduleNotice refuses with the reasons of SchedulingPolicy and stores nothing | `refused`, no row |
