@@ -6,7 +6,7 @@ A findability provider shows citomni/findability the content that a package owns
 
 A package with providers works without citomni/findability, so it lists the package in `suggest` and `require-dev` of its `composer.json`, not in `require`. Its Registry names each provider only as a `::class` string, so PHP loads the class, and the interface with it, only when findability uses it. Nothing may load every class of `vendor/` up front, such as a preload script.
 
-The app that installs both lists `\CitOmni\Findability\Boot\Registry::class` in `config/providers.php` before the package's Registry, and imports `vendor/citomni/findability/sql/citomni_findability.sql`.
+The app that installs both lists `\CitOmni\Findability\Boot\Registry::class` in `config/providers.php`, and imports `vendor/citomni/findability/sql/citomni_findability.sql`.
 
 ## Contract
 
@@ -79,7 +79,7 @@ public const array CFG_HTTP = [
 ];
 ```
 
-The search sources go in `CFG_COMMON`, because content is also saved and indexed in CLI, such as by an import. citomni/findability ships every provider map as an empty map, and an empty array replaces the map before it. The package therefore comes after citomni/findability in the app's `config/providers.php`; its README says so.
+The search sources go in `CFG_COMMON`, because content is also saved and indexed in CLI, such as by an import. citomni/findability ships every provider map as an empty map. An empty array merged into a map changes nothing, so the package may come before or after citomni/findability in the app's `config/providers.php`.
 
 ## Pattern
 
