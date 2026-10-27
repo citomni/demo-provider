@@ -36,7 +36,7 @@ A dynamic variable costs its source call on every page it covers. Keep the sourc
 ## Precedence
 
 - Cfg, last wins: the mode baseline of citomni/http or citomni/cli, then each provider in `providers.php` order (`CFG_COMMON`, then its mode constant), then the app's cfg files and their environment overlays. Associative arrays merge key by key; a list replaces the list before it.
-- An empty array counts as a list, so a later `[]` replaces the map before it. A package that adds keys to another package's map, such as `jobrunner.handlers`, comes after that package in `providers.php`.
+- An empty array merged into a map changes nothing. A package that adds keys to another package's map, such as `jobrunner.handlers`, may therefore come before or after that package in `providers.php`, also when that package ships the map as `[]`.
 - Services: app service maps win over providers, later providers win over earlier ones, and the mode baseline has the lowest precedence.
 - Routes and commands, last wins: mode baseline, providers, app files, app environment files. They merge like cfg, so an app route with only `template_file` and `template_layer` changes the template of a package route and keeps its controller.
 - Environment-specific values belong to the app, never to the package baseline.

@@ -13,7 +13,7 @@ In both modes, an adapter reads a job's status, result and log lines with `(new 
 
 ## Setup
 
-A package that ships a handler requires citomni/jobrunner in `composer.json`, because the handler implements its interface. The app that installs the package lists `\CitOmni\JobRunner\Boot\Registry::class` in `config/providers.php` before the package's Registry, and imports `vendor/citomni/jobrunner/sql/citomni_jobrunner.sql`. citomni/jobrunner brings the services, the `jobrunner` cfg baseline and the `job:*` commands.
+A package that ships a handler requires citomni/jobrunner in `composer.json`, because the handler implements its interface. The app that installs the package lists `\CitOmni\JobRunner\Boot\Registry::class` in `config/providers.php`, and imports `vendor/citomni/jobrunner/sql/citomni_jobrunner.sql`. citomni/jobrunner brings the services, the `jobrunner` cfg baseline and the `job:*` commands.
 
 ## Contract
 
@@ -51,7 +51,7 @@ public const array CFG_COMMON = [
 ];
 ```
 
-citomni/jobrunner ships `'handlers' => []` in its own baseline, and an empty array replaces the map before it. The package therefore comes after citomni/jobrunner in the app's `config/providers.php`; its README says so.
+citomni/jobrunner ships `'handlers' => []` in its own baseline. An empty array merged into a map changes nothing, so the package may come before or after citomni/jobrunner in the app's `config/providers.php`.
 
 ## Pattern
 
