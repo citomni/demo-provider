@@ -32,6 +32,7 @@ A provider package is installed with Composer and enabled in an app's `config/pr
 | Util, Enum, Exception | [`src/Util/`](src/Util/README.md), [`src/Enum/`](src/Enum/README.md), [`src/Exception/`](src/Exception/README.md) |
 | Constant, Contract | [`src/Constant/`](src/Constant/README.md), [`src/Contract/`](src/Contract/README.md) |
 | Job handler | [`src/JobRunner/`](src/JobRunner/README.md), with token/push and trusted/pull jobs |
+| Findability provider | [`src/Findability/`](src/Findability/README.md) |
 | Template | [`templates/`](templates/README.md) |
 | Language file | [`language/`](language/README.md) |
 | Database schema | [`sql/`](sql/README.md) |
